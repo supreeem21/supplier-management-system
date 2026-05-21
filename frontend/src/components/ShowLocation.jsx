@@ -1,5 +1,7 @@
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 
+const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
 const containerStyle = {
   width: "100%",
   height: "400px",
@@ -12,7 +14,7 @@ const center = {
 
 export default function MyMap() {
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "YOUR_API_KEY_HERE",
+    googleMapsApiKey: apiKey,
   });
 
   if (!isLoaded) return <p>Loading map...</p>;
