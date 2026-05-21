@@ -15,6 +15,8 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const app = express();
 const PORT = process.env.PORT;
+const mongodb_url = process.env.mongodb_url;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // ------------------- MIDDLEWARES -------------------
 app.use(express.json());
@@ -33,7 +35,7 @@ export const verifyToken = (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, "SUPRIM");
+    const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded; // attach user info
     next();
   } catch (error) {
@@ -43,7 +45,7 @@ export const verifyToken = (req, res, next) => {
 
 // ------------------- MONGODB CONNECTION -------------------
 mongoose
-  .connect("mongodb://127.0.0.1:27017/patan-handcraft")
+  .connect(mongodb_url)
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
@@ -228,7 +230,7 @@ app.post("/admin/login", async (req, res) => {
       }
       if (isMatch) {
         const payload = { email };
-        const token = jwt.sign(payload, "SUPRIM", {
+        const token = jwt.sign(payload, JWT_SECRET, {
           expiresIn: "1d",
         });
         return res.json({ message: "Login Succcessful", token });
